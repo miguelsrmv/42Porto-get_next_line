@@ -92,11 +92,16 @@ char	*get_next_line(int fd)
 		buffer = ft_strjoin(oldbuffer, buffer);
 		oldbuffer = "";
 	}
-	if (buffer[BUFFER_SIZE - 1] != '\n')
+	if (buffer[BUFFER_SIZE - 1] != '\n')  // Não funciona porque pode haver um \n antes do fim e convém dar a string logo aí
 	{
 		if (ft_strchr(buffer, '\n'))
 		{
 			oldbuffer = ft_substr(buffer, ft_strchr(buffer, '\n') - buffer + 1, ft_strlen(buffer));  //Editar isto em caos de várias \n seguidas. Não usar ft_susbtr??
+			if (oldbuffer[1] == '\n')
+			{
+				(oldbuffer)++;
+				return("\n");
+			}
 			return (ft_substr(buffer, 0, ft_strchr(buffer, '\n') - buffer + 1));
 		}
 		else
