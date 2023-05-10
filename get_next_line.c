@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:31:09 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/10 16:41:24 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:18:41 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,30 +19,45 @@
 
 char	*get_next_line(int fd)
 {
-	char			*buffer;
-	static char		*oldbuffer;
+	static char	*oldbuffer;
+	char		*buffer;
+	char		*temp;
+	ssize_t		read_len;
 
 	buffer = malloc(BUFFER_SIZE * sizeof(char) + 1);
-	if (!fd)
+	if (fd < 0 || BUFFER_SIZE <= 0 || !buffer)
 		return (NULL);
 	if (oldbuffer && ft_strchr(oldbuffer, '\n'))
-		return (handle_newline(buffer, &oldbuffer, 1));
-	read(fd, buffer, BUFFER_SIZE);
-	if (buffer[0] == '\0')
 	{
-		if (oldbuffer)
-			return (oldbuffer);
-		return ("");
+		temp = handle_newline(buffer, &oldbuffer, 1);
+		free(buffer);
+		return (temp);
+	}
+	read_len = read(fd, buffer, BUFFER_SIZE);
+	buffer[read_len] = '\0';
+	if (read_len <= 0)
+	{
+		free(buffer);
+		if (read_len == 0)
+			temp = oldbuffer;
+		else
+			temp = NULL;
+		oldbuffer = NULL;
+		return (temp);
 	}
 	if (oldbuffer)
 	{
-		buffer = ft_strjoin(oldbuffer, buffer);
-		oldbuffer = "";
+		temp = ft_strjoin(oldbuffer, buffer);
+		free(buffer);
+		buffer = temp;
+		oldbuffer = NULL;
 	}
 	if (ft_strchr(buffer, '\n'))
 		return (handle_newline(buffer, &oldbuffer, 2));
-	return (ft_strjoin(buffer, get_next_line(fd)));
+	oldbuffer = buffer;
+	return (get_next_line(fd));
 }
+
 /*
 int	main(void)
 {

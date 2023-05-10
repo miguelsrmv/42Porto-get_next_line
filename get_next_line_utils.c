@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:31:22 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/10 16:42:02 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:26:08 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*newstr;
 	int		i;
@@ -56,6 +56,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	newstr[i + j] = '\0';
+	free(s1);
 	return (newstr);
 }
 
@@ -85,10 +86,11 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 char	*handle_newline(char *buffer, char **oldbuffer, int n)
 {
-	int	buf_len;
-	int	oldbuf_len;
-	int	buf_nl;
-	int	old_nl;
+	int		buf_len;
+	int		oldbuf_len;
+	int		buf_nl;
+	int		old_nl;
+	char	*temp;
 
 	buf_len = ft_strlen(buffer);
 	if (n == 1)
@@ -96,12 +98,15 @@ char	*handle_newline(char *buffer, char **oldbuffer, int n)
 		oldbuf_len = ft_strlen(*oldbuffer);
 		old_nl = ft_strchr(*oldbuffer, '\n') - *oldbuffer + 1;
 		buffer = ft_substr(*oldbuffer, 0, old_nl);
-		*oldbuffer = ft_substr(*oldbuffer, old_nl, oldbuf_len - buf_len + 1);
+		temp = ft_substr(*oldbuffer, old_nl, oldbuf_len - buf_len + 1);
+		free(*oldbuffer);
+		*oldbuffer = temp;
 		return (buffer);
 	}
 	buf_nl = ft_strchr(buffer, '\n') - buffer + 1;
 	if (ft_strlen(buffer) == 1)
 		return ("\n");
+	temp = ft_substr(buffer, 0, buf_nl);
 	*oldbuffer = ft_substr(buffer, buf_nl, buf_len - buf_nl);
-	return (ft_substr(buffer, 0, buf_nl));
+	return (temp);
 }
