@@ -6,26 +6,14 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:31:22 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/07 15:57:54 by mde-sa--         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/15 14:34:28 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/04/18 08:46:48 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:42:02 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 
-ssize_t	ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	size_t	i;
 
@@ -43,7 +31,6 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)s);
 	return (0);
 }
-
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -70,4 +57,51 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	newstr[i + j] = '\0';
 	return (newstr);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*substring;
+	size_t	i;
+
+	if (!s)
+		return (NULL);
+	if (start > ft_strlen(s))
+		len = 0;
+	else if (len > ft_strlen(s) - start)
+		len = ft_strlen(s) - start;
+	substring = malloc(len + 1);
+	if (!substring)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		substring[i] = s[start + i];
+		i++;
+	}
+	substring[i] = '\0';
+	return (substring);
+}
+
+char	*handle_newline(char *buffer, char **oldbuffer, int n)
+{
+	int	buf_len;
+	int	oldbuf_len;
+	int	buf_nl;
+	int	old_nl;
+
+	buf_len = ft_strlen(buffer);
+	if (n == 1)
+	{
+		oldbuf_len = ft_strlen(*oldbuffer);
+		old_nl = ft_strchr(*oldbuffer, '\n') - *oldbuffer + 1;
+		buffer = ft_substr(*oldbuffer, 0, old_nl);
+		*oldbuffer = ft_substr(*oldbuffer, old_nl, oldbuf_len - buf_len + 1);
+		return (buffer);
+	}
+	buf_nl = ft_strchr(buffer, '\n') - buffer + 1;
+	if (ft_strlen(buffer) == 1)
+		return ("\n");
+	*oldbuffer = ft_substr(buffer, buf_nl, buf_len - buf_nl);
+	return (ft_substr(buffer, 0, buf_nl));
 }
