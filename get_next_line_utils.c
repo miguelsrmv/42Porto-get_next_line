@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:31:22 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/10 18:26:08 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/10 19:00:00 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ char	*ft_strjoin(char *s1, char *s2)
 		newstr[i] = s1[i];
 		i++;
 	}
+	if (s1)
+		free(s1);
 	j = 0;
 	while (s2[j])
 	{
@@ -56,7 +58,6 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	newstr[i + j] = '\0';
-	free(s1);
 	return (newstr);
 }
 

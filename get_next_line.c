@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 18:31:09 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/10 18:18:41 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:59:16 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ char	*get_next_line(int fd)
 	{
 		temp = handle_newline(buffer, &oldbuffer, 1);
 		free(buffer);
+		free(oldbuffer);
+		oldbuffer = NULL;
 		return (temp);
 	}
 	read_len = read(fd, buffer, BUFFER_SIZE);
@@ -42,6 +44,7 @@ char	*get_next_line(int fd)
 			temp = oldbuffer;
 		else
 			temp = NULL;
+		free(oldbuffer);
 		oldbuffer = NULL;
 		return (temp);
 	}
@@ -49,8 +52,9 @@ char	*get_next_line(int fd)
 	{
 		temp = ft_strjoin(oldbuffer, buffer);
 		free(buffer);
-		buffer = temp;
+		free(oldbuffer);
 		oldbuffer = NULL;
+		buffer = temp;
 	}
 	if (ft_strchr(buffer, '\n'))
 		return (handle_newline(buffer, &oldbuffer, 2));
