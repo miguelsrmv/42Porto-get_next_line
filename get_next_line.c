@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/12 22:15:39 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/12 23:07:08 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,17 @@ char	*line_from_old_buffer(char **oldbuffer)
 
 char	*handle_readlen(char *buffer, char *oldbuffer, ssize_t read_len)
 {
+	char	*temp;
+
 	free(buffer);
 	if (read_len == 0 && oldbuffer)
-		return (oldbuffer);
+	{
+		temp = ft_strdup(oldbuffer);
+		free(oldbuffer);
+		return (temp);
+	}
+	else if (read_len == 0 && !oldbuffer)
+		return (NULL);
 	else if (read_len == -1)
 		return (NULL);
 	free(oldbuffer);
@@ -63,7 +71,7 @@ char	*get_next_line(int fd)
 	char		*buffer;
 	ssize_t		read_len;
 
-	if (fd < 0 || !fd || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (oldbuffer && ft_strchr(oldbuffer, '\n'))
 		return (line_from_old_buffer(&oldbuffer));
@@ -93,7 +101,7 @@ int	main(void)
 	char	*filename;
 	int		i;
 
-	filename = "testfiles/mytest";
+	filename = "testfiles/1_no_nl";
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
