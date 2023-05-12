@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/12 21:10:30 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/12 22:15:39 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,30 @@ char	*line_from_old_buffer(char **oldbuffer)
 	char	*right_buffer;
 	int		size;
 
-	size = ft_strchr(*oldbuffer, '\n') - *oldbuffer;
-	left_buffer = ft_substr(*oldbuffer, 0, size);
-	right_buffer = ft_strdup(ft_strchr(*oldbuffer, '\n') + 1);
-	free(*oldbuffer);
-	*oldbuffer = right_buffer;
+	if (ft_strchr(*oldbuffer, '\n'))
+	{
+		size = ft_strchr(*oldbuffer, '\n') - *oldbuffer;
+		left_buffer = ft_substr(*oldbuffer, 0, size);
+		right_buffer = ft_strdup(ft_strchr(*oldbuffer, '\n') + 1);
+		free(*oldbuffer);
+		*oldbuffer = right_buffer;
+	}
+	else
+	{
+		left_buffer = ft_strdup(*oldbuffer);
+		free(*oldbuffer);
+		*oldbuffer = NULL;
+	}
 	return (left_buffer);
 }
 
 char	*handle_readlen(char *buffer, char *oldbuffer, ssize_t read_len)
 {
-	char	*temp;
-
 	free(buffer);
-	if (read_len == 0)
-	{
-		temp = ft_strdup(oldbuffer);
-		free(oldbuffer);
-		return (temp);
-	}
+	if (read_len == 0 && oldbuffer)
+		return (oldbuffer);
+	else if (read_len == -1)
+		return (NULL);
 	free(oldbuffer);
 	return (NULL);
 }
@@ -66,7 +71,7 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	read_len = read(fd, buffer, BUFFER_SIZE);
-	if (read_len)
+	if (read_len > 0)
 		buffer[read_len] = '\0';
 	if (read_len <= 0)
 		return (handle_readlen(buffer, oldbuffer, read_len));
@@ -88,7 +93,7 @@ int	main(void)
 	char	*filename;
 	int		i;
 
-	filename = "testfiles/mix1";
+	filename = "testfiles/mytest";
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 	{
@@ -96,7 +101,7 @@ int	main(void)
 		exit(1);
 	}
 	i = 0;
-	while (i < 3)
+	while (i < 20)
 	{
 		printf("String %i: %s**\n", i + 1, (get_next_line(fd)));
 		i++;
