@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/12 23:50:03 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:33:01 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,8 @@ char	*handle_readlen(char *buffer, char *oldbuffer, ssize_t read_len)
 		free(oldbuffer);
 		return (temp);
 	}
-	else if (read_len < 0)
-		return (NULL);
-	free(oldbuffer);
+	else if (read_len < 0 && oldbuffer)
+		free(oldbuffer);
 	return (NULL);
 }
 
@@ -81,14 +80,13 @@ char	*get_next_line(int fd)
 	read_len = read(fd, buffer, BUFFER_SIZE);
 	if (read_len > 0)
 		buffer[read_len] = '\0';
-	if (read_len <= 0)
+	else if (read_len <= 0)
 		return (handle_readlen(buffer, oldbuffer, read_len));
-	fflush(stdout);
 	if (oldbuffer)
 		oldbuffer = join_buffers(oldbuffer, buffer);
 	else
 		oldbuffer = buffer;
-	if (ft_strchr(oldbuffer, '\n'))
+	if (oldbuffer)
 		return (line_from_old_buffer(&oldbuffer));
 	return (get_next_line(fd));
 }
@@ -110,9 +108,9 @@ int	main(void)
 		exit(1);
 	}
 	i = 0;
-	while (i < 20)
+	while (i < 3)
 	{
-		printf("String %i: %s**\n\n\n\n", i + 1, (get_next_line(fd)));
+		printf("String %i: %s**\n\n\n", i + 1, (get_next_line(fd)));
 		i++;
 	}
 	close(fd);
