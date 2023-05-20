@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   new_get_next_line.c                                :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/20 10:59:14 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/20 12:35:48 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "get_next_line.h"
 #include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include "get_next_line.h"
 
 char	*ft_get_text(int fd, char *buffer)
 {
@@ -23,7 +25,7 @@ char	*ft_get_text(int fd, char *buffer)
 	if (!temp_buffer)
 		return (NULL);
 	read_len = 1;
-	while (!ft_strchr(buffer, '\n') && read_len > 0)
+	while (!ft_strchr(buffer, '\n') && read_len != 0)
 	{
 		read_len = read(fd, temp_buffer, BUFFER_SIZE);
 		if (read_len == -1)
@@ -49,7 +51,18 @@ char	*get_next_line(int fd)
 	buffer = ft_get_text(fd, buffer);
 	if (!buffer)
 		return (NULL);
-	line = ft_strtrim_l(buffer, '\n');
-	buffer = ft_strtrim_r(buffer, '\n');
+	line = ft_strtrim_left(buffer);
+	buffer = ft_strtrim_right(buffer);
 	return (line);
 }
+/*
+int main (void)
+{
+	int fd;
+	char *line;
+
+	fd = open("testfiles/empty", O_RDONLY);
+	line = get_next_line(fd);
+	printf("%s", line);
+}
+*/

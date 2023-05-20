@@ -6,7 +6,7 @@
 /*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:00 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/20 10:59:25 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/20 12:56:29 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ size_t	ft_strlen(const char *str)
 	size_t	i;
 
 	i = 0;
+	if (!str)
+		return (0);
 	while (str[i])
 		i++;
 	return (i);
@@ -25,6 +27,8 @@ size_t	ft_strlen(const char *str)
 
 char	*ft_strchr(const char *s, int c)
 {
+	if (!s)
+		return (0);
 	while (*s && (unsigned char)c != *s)
 		s++;
 	if ((unsigned char)c == *s)
@@ -32,57 +36,63 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *bufftxt, char *temp)
 {
-	char	*newstr;
-	int		i;
-	int		j;
+	char	*join;
+	size_t	i;
+	size_t	j;
 
-	if (!s1 || !s2)
-		return (NULL);
-	newstr = (char *)malloc((ft_strlen(s1) + ft_strlen(s2)) * sizeof(char) + 1);
-	if (!newstr)
-		return (NULL);
-	i = 0;
-	while (s1[i])
+	i = -1;
+	j = -1;
+	if (!bufftxt)
 	{
-			newstr[i] = s1[i];
-			i++;
+		bufftxt = malloc(sizeof(char) * 1);
+		bufftxt[0] = '\0';
 	}
-	j = 0;
-	while (s2[j])
-	{
-			newstr[i + j] = s2[j];
-			j++;
-	}
-	newstr[i + j] = '\0';
-	return (newstr);
+	join = malloc(sizeof(char) * (ft_strlen(bufftxt) + ft_strlen(temp) + 1));
+	if (!join)
+		return (NULL);
+	while (bufftxt[++i])
+		join[i] = bufftxt[i];
+	while (temp[++j])
+		join[j + i] = temp[j];
+	join[i + j] = '\0';
+	free(bufftxt);
+	return (join);
 }
 
-char	*ft_strtrim_l(char *buffer, char c)
+char	*ft_strtrim_left(char *buffer)
 {
 	char	*substring;
+	int		len;
 	int		i;
 
-	if (!buffer)
+	len = 0;
+	i = 0;
+	if (!buffer[len])
 		return (NULL);
-	substring = malloc((ft_strchr(buffer, '\n') - buffer) * sizeof(char) + 1);
+	while (buffer[len] && buffer[len] != '\n')
+		len++;
+	substring = malloc(sizeof(char) * len + 2);
 	if (!substring)
 		return (NULL);
-	while (buffer[i] != c)
+	while (i <= len)
+	{
 		substring[i] = buffer[i];
+		i++;
+	}
 	substring[i] = '\0';
 	return (substring);
 }
 
-char	*ft_strtrim_r(char *buffer, char c)
+char	*ft_strtrim_right(char *buffer)
 {
-	char	*next_line;
-	int		i;
-	int		j;
+	char		*next_line;
+	size_t		i;
+	size_t		j;
 
 	i = 0;
-	while (buffer[i] && buffer[i] != c)
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
 	if (!buffer[i])
 	{
