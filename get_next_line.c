@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/17 21:06:29 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/20 10:10:16 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,11 @@ char	*join_buffers(char *oldbuffer, char *buffer)
 
 char	*read_from_file(int fd, char *buffer, int buffer_size, ssize_t *read_len)
 {
+	if (buffer)
+		free (buffer);
+	buffer = malloc(buffer_size * sizeof(char) + 1);
+	if (!buffer)
+		return (NULL);
 	*read_len = read(fd, buffer, buffer_size);
 	if (*read_len > 0)
 		buffer[*read_len] = '\0';
@@ -125,6 +130,18 @@ char	*read_from_file(int fd, char *buffer, int buffer_size, ssize_t *read_len)
 	return (buffer);
 }
 
+char	*handle_oldbuffer(char **old_buffer)
+{
+	char	*buffer;
+	char	*tmp;
+	
+	buffer = ft_substr(*old_buffer, 0, *old_buffer - ft_strchr(*old_buffer, '\n'));
+	tmp = *old_buffer;
+	*old_buffer = ft_strdup(ft_strchr(*old_buffer, '\n') + 1);
+	free(tmp);
+	return (buffer);
+}
+
 char	*get_next_line(int fd, int buffer_size)
 {
 	char		*buffer;
@@ -133,15 +150,14 @@ char	*get_next_line(int fd, int buffer_size)
 
 	if (fd < 0 || buffer_size <= 0)
 		return (NULL);
-	buffer = malloc(buffer_size * sizeof(char) + 1);
-	if (!buffer)
-		return (NULL);
+	if (old_buffer && ft_strchr(old_buffer, '\n'))
+		return (handle_oldbuffer(&old_buffer));
 	buffer = read_from_file(fd, buffer, buffer_size, &read_len);
 	if (old_buffer)
 		buffer = join_buffers(old_buffer, buffer);
 	while (!ft_strchr(buffer, '\n') && read_len > 0)
-		buffer = join_buffers(buffer, read_from_file(fd, buffer, buffer_size, &read_len));
-	if (ft_strchr(buffer, '\n'))
+		buffer = join_buffers(ft_strdup(buffer), read_from_file(fd, buffer, buffer_size, &read_len));
+	if (buffer && ft_strchr(buffer, '\n'))
 	{
 		old_buffer = ft_strdup(ft_strchr(buffer, '\n') + 1);
 		buffer = ft_substr(buffer, 0, ft_strlen(buffer) - ft_strlen(old_buffer));
