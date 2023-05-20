@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mde-sa-- <mde-sa--@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:00 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/12 19:36:26 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/20 10:59:25 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,44 +59,43 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (newstr);
 }
 
-char	*ft_strdup(const char *src)
-{
-	char	*cpy;
-	size_t	i;
-
-	i = 0;
-	while (src[i])
-		i++;
-	cpy = (char *)malloc(sizeof(char) * i + 1);
-	if (!cpy)
-		return (NULL);
-	i = 0;
-	while (*src)
-			cpy[i++] = *src++;
-	cpy[i] = '\0';
-	return (cpy);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_strtrim_l(char *buffer, char c)
 {
 	char	*substring;
-	size_t	i;
+	int		i;
 
-	if (!s)
+	if (!buffer)
 		return (NULL);
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	if (start > ft_strlen(s))
-		return (ft_strdup(""));
-	substring = malloc(len * sizeof(char) + 1);
+	substring = malloc((ft_strchr(buffer, '\n') - buffer) * sizeof(char) + 1);
 	if (!substring)
 		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		substring[i] = s[start + i];
-		i++;
-	}
+	while (buffer[i] != c)
+		substring[i] = buffer[i];
 	substring[i] = '\0';
 	return (substring);
+}
+
+char	*ft_strtrim_r(char *buffer, char c)
+{
+	char	*next_line;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (buffer[i] && buffer[i] != c)
+		i++;
+	if (!buffer[i])
+	{
+		free(buffer);
+		return (NULL);
+	}
+	next_line = malloc(sizeof(char) * (ft_strlen(buffer) - i));
+	if (!buffer)
+		return (NULL);
+	j = -1;
+	while (++i < ft_strlen(buffer))
+		next_line[++j] = buffer[i];
+	next_line[++j] = '\0';
+	free(buffer);
+	return (next_line);
 }
