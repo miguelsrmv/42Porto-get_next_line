@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:00 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/20 13:00:56 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:20:20 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-char	*ft_strjoin(char *bufftxt, char *temp)
+char	*ft_strjoin(char *buffer, char *temp)
 {
 	char	*join;
 	size_t	i;
@@ -44,20 +44,20 @@ char	*ft_strjoin(char *bufftxt, char *temp)
 
 	i = -1;
 	j = -1;
-	if (!bufftxt)
+	if (!buffer)
 	{
-		bufftxt = malloc(sizeof(char) * 1);
-		bufftxt[0] = '\0';
+		buffer = malloc(sizeof(char) * 1);
+		buffer[0] = '\0';
 	}
-	join = malloc(sizeof(char) * (ft_strlen(bufftxt) + ft_strlen(temp) + 1));
+	join = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(temp) + 1));
 	if (!join)
 		return (NULL);
-	while (bufftxt[++i])
-		join[i] = bufftxt[i];
+	while (buffer[++i])
+		join[i] = buffer[i];
 	while (temp[++j])
 		join[j + i] = temp[j];
 	join[i + j] = '\0';
-	free(bufftxt);
+	free(buffer);
 	return (join);
 }
 
