@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mde-sa-- <mde-sa--@student.42porto.com     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 14:09:07 by mde-sa--          #+#    #+#             */
-/*   Updated: 2023/05/24 15:53:46 by mde-sa--         ###   ########.fr       */
+/*   Updated: 2023/05/24 15:56:59 by mde-sa--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_get_text(int fd, char *buffer)
 {
@@ -43,15 +43,15 @@ char	*ft_get_text(int fd, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[FOPEN_MAX];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > FOPEN_MAX)
 		return (NULL);
-	buffer = ft_get_text(fd, buffer);
-	if (!buffer)
+	buffer[fd] = ft_get_text(fd, buffer[fd]);
+	if (!buffer[fd])
 		return (NULL);
-	line = ft_strtrim_left(buffer);
-	buffer = ft_strtrim_right(buffer);
+	line = ft_strtrim_left(buffer[fd]);
+	buffer[fd] = ft_strtrim_right(buffer[fd]);
 	return (line);
 }
